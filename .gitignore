@@ -2,3 +2,5 @@ SharePoint_Raw/
 __pycache__/
 .DS_Store
 .preview/
+.sharepoint-audit/
+node_modules/

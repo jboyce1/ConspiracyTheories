@@ -18,3 +18,7 @@ GitHub Pages publishes from **main → /(root)** using its built-in branch publi
 ## Lesson media
 
 `scripts/media.json` selects Commons figures and lesson video IDs. Image attribution is stored in `assets/images/commons/credits.json` and published on `image-credits.html`. Original Commons files are stored locally so the images do not depend on external hotlinks.
+
+## SharePoint migration audit
+
+Run `./run-sharepoint-audit.sh` in a desktop terminal to sign into SharePoint and check the original course for missing embeds and resources. See [the audit instructions](scripts/sharepoint-audit/README.md). All browser state and reports stay in the ignored `.sharepoint-audit/` directory.

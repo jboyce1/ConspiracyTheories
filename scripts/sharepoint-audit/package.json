@@ -1,0 +1,17 @@
+{
+  "name": "conspiracy-sharepoint-audit",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Authenticated, read-only SharePoint course media audit",
+  "scripts": {
+    "audit": "node audit.mjs",
+    "test": "node --test audit.test.mjs"
+  },
+  "dependencies": {
+    "playwright-core": "1.56.1"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
