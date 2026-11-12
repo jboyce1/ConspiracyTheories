@@ -42,6 +42,7 @@ def clean(node,f):
  for e in b(['script','style','button','input']):e.decompose()
  for e in b.find_all(True):
   keep={k:v for k,v in e.attrs.items() if k in ['href','src','alt','colspan','rowspan','id','scope']}
+  if re.search(r'margin-left:\s*40px',e.get('style','')): keep['class']=['indented']
   e.attrs=keep
   if e.name=='a' and e.get('href'):
    u=urlparse(e['href']); path=unquote(u.path)
@@ -61,6 +62,75 @@ def clean(node,f):
     if target:e['src']=BASE+target
     else:e.decompose()
  return ''.join(str(x) for x in b.contents)
+def format_lesson(content,l):
+ b=BeautifulSoup(content,'html.parser')
+ # Remove saved editor controls and blank spacer paragraphs.
+ for e in list(b.select('a')):
+  if not e.get_text(strip=True) and not e.find('img'):e.decompose()
+ for e in list(b.select('span,div')):
+  e.unwrap()
+ for e in list(b.select('p,h2,h3,h4')):
+  if not e.get_text(strip=True) and not e.find(['img','video','audio']):e.decompose()
+ blocks=b.select('.lesson-block')
+ if blocks:
+  first=blocks[0].find(['h2','h3'])
+  if first and (norm(first.get_text())==norm(l['title']) or l['code']=='M2.1a'):first.decompose()
+ # Top-level activities belong in the section index; supporting details do not.
+ major={
+  'M1.2':['Lecture Outline: The Psychological Struggle of Having Beliefs Questioned','Discussion Rules:','Assignment: Demonstrating Heuristics in Action','Tricks of the Trade: Heuristics','Additional discussion:'],
+  'M3.3':['Example 1','Example 2'],
+  'M3.4':['Evidence Discussion'],
+  'M3.5':['Evidence Discussion','The Fog of Misinformation: From Authoritarian Regimes to Middle School Corridors'],
+  'M3.6':['If-Then Analysis Exercise'],
+  'M3.7':['Historical Case Studies',"Hypothetical Analysis – Hitler's Survival Theory"]
+ }
+ for h in b.select('h2,h3,h4,p'):
+  text=' '.join(h.get_text(' ',strip=True).split())
+  if text in major.get(l['code'],[]):h.name='h2'
+  if h.name=='h2' and l['code']=='M1.1' and text.lower() in ['conspiracy','conspire','theory','law']:h.name='h3'
+  if h.name=='p' and re.match(r'^Module\s*\d.*Class\s*\d',text):h.name='h3'
+  if h.name=='p' and text.startswith('Exit Ticket:'):
+   title=b.new_tag('h2');title.string='Exit Ticket';h.insert_before(title)
+  if h.name=='p' and text.rstrip(':') in ['Objectives','Essential Question','Overarching Question','Standards','Goal','Concepts (lecture)']:
+   h.name='h3'
+ # Restore objectives written as ~ paragraphs to real, indented lists.
+ for block in b.select('.lesson-block'):
+  current=None
+  for e in list(block.find_all('p',recursive=False)):
+   text=e.get_text(' ',strip=True)
+   if text.startswith('~'):
+    if current is None:
+     current=b.new_tag('ul');current['class']='objectives-list';e.insert_before(current)
+    e.name='li'
+    e.string=text.lstrip('~').strip();current.append(e.extract())
+   else:current=None
+ # Keep the text under each major heading together with a modest indent.
+ for section in list(b.select('.lesson-block')):
+  section.unwrap()
+ grouped=b.new_tag('div');grouped['class']='lesson-content'
+ body=None
+ for e in list(b.contents):
+  if getattr(e,'name',None)=='h2':
+   section=b.new_tag('section');section['class']='content-section';grouped.append(section)
+   section.append(e.extract());body=b.new_tag('div');body['class']='section-body';section.append(body)
+  elif body is not None:body.append(e.extract())
+  else:grouped.append(e.extract())
+ for section in grouped.select('.section-body'):
+  for h in section.select('h3'):
+   h['class']=list(h.get('class',[]))+['detail-heading']
+ return str(grouped)
+
+def lesson_art(l):
+ # Match the original SharePoint banner to its archived asset, including blob images.
+ img=l['soup'].select_one('[data-sp-originalimgsrc]')
+ if not img:return ''
+ name=Path(unquote(img['data-sp-originalimgsrc'])).name
+ target=next((rel for path,n,rel in assets if n==name),None)
+ if not target:return ''
+ diagrams={'M3.1','M3.2','M3.3','M3.4','M3.5','M3.6','M3.7','M3.8'}
+ alt='Conspiracy theory analysis workflow' if l['code'] in diagrams else ('Conspiracy theories course illustration' if l['code'].startswith('M2') else 'Original lesson artwork')
+ return f'<figure class="course-art"><a href="{BASE}{target}" aria-label="Open full-size image: {alt}"><img src="{BASE}{target}" alt="{alt}" loading="lazy"></a></figure>'
+
 def shell(title,body,key=''):
  nav='<h1><a href="'+BASE+'">Conspiracy<br>Theories</a></h1><p class="nav-caption">Research • Evidence • Analysis</p>'
  for module,label in [('M1','Belief & perception'),('M2','Choosing a theory'),('M3','Investigating claims')]:
@@ -70,7 +140,7 @@ def shell(title,body,key=''):
  nav+=f'<h2 class="nav-label">Resources</h2><a href="{BASE}resources.html">Course downloads</a><a href="{BASE}">Course overview</a>'
  return f'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Conspiracy Theories: a course in research, evidence, and structured analysis."><title>{html.escape(title)} | Conspiracy Theories</title><link rel="stylesheet" href="{BASE}assets/css/styles.css"><script defer src="{BASE}assets/js/site.js"></script></head><body><a class="skip-link" href="#main">Skip to content</a><nav class="course-nav" aria-label="Course">{nav}</nav><nav id="left-nav" aria-label="On this page"><h2>Lines of Inquiry</h2><ul id="toc"></ul></nav><main id="main" class="main-content">{body}<footer>Conspiracy Theories · Jacob Boyce</footer></main></body></html>'
 for i,l in enumerate(lessons):
- f=l['source']; content=f'<p class="eyebrow">{l["code"]} · Conspiracy Theories</p><h1>{html.escape(l["title"])}</h1>'
+ f=l['source']; content=f'<p class="eyebrow">{l["code"]} · Conspiracy Theories</p><h1>{html.escape(l["title"])}</h1>'+lesson_art(l)
  for control in l['soup'].select('[data-automation-id="CanvasControl"]'):
   if control.select('[data-sp-feature-tag="PageTitle web part (Banner)"]'):continue
   blocks=control.select('.ck-content')
@@ -83,6 +153,7 @@ for i,l in enumerate(lessons):
     label=e.get('aria-label','');m=re.match(r'(.+?\.(?:docx|pptx|pdf|mp4|mp3))\.',label)
     if m and (target:=match(m[1])):content+=f'<p class="file-card"><a href="{BASE}{target}">{html.escape(m[1])}</a></p>'
    for a in control.select('a[href]'):content+=clean(a,f)
+ content=format_lesson(content,l)
  local=relevant(l)
  content+='<h2>Lesson downloads</h2><ul class="download-list">'
  for name,rel in local:content+=f'<li><a href="{BASE}{rel}">{html.escape(Path(name).stem)}</a> <small>{Path(name).suffix[1:].upper()}</small></li>'
@@ -96,7 +167,7 @@ for i,l in enumerate(lessons):
  if i+1<len(lessons):content+=f'<a href="{BASE}lessons/{lessons[i+1]["slug"]}.html">{lessons[i+1]["code"]}: {html.escape(lessons[i+1]["title"])} →</a>'
  content+='</div>'
  (OUT/'lessons'/f'{l["slug"]}.html').write_text(shell(l['title'],content,l['slug']))
-body='<p class="eyebrow">A course in critical thinking</p><h1>Conspiracy Theories</h1><p class="lead">Follow the claim. Question the assumptions. Test the evidence.</p><p>Explore how beliefs form, how people make decisions, and how structured analysis helps us evaluate competing explanations. Build a research project and a series of recorded episodes, from your first question to your final conclusion.</p><a class="button-link" href="'+BASE+'lessons/'+lessons[0]['slug']+'.html">Begin with Conspiracies Everywhere →</a><h2>The course</h2>'
+body='<figure class="course-art home-art"><img src="'+BASE+'assets/images/46479-conspiracy-theoy-choice.jpg" alt="Course illustration combining moon landings, lizard people, and historical conspiracy imagery"></figure><p class="eyebrow">A course in critical thinking</p><h1>Conspiracy Theories</h1><p class="lead">Follow the claim. Question the assumptions. Test the evidence.</p><p>Explore how beliefs form, how people make decisions, and how structured analysis helps us evaluate competing explanations. Build a research project and a series of recorded episodes, from your first question to your final conclusion.</p><a class="button-link" href="'+BASE+'lessons/'+lessons[0]['slug']+'.html">Begin with Conspiracies Everywhere →</a><h2>The course</h2>'
 for prefix,title,desc in [('M1','Belief & perception','Examine conspiracy theories, perception, cognitive biases, and the limits of belief.'),('M2','Choosing a theory','Analyze decisions and select a claim to investigate.'),('M3','Investigating claims','Gather sources, develop competing theories, test assumptions, evaluate evidence, and present your conclusion.')]:
  body+=f'<h2>{prefix} · {title}</h2><p>{desc}</p><ul class="agenda-list">'
  for l in lessons:

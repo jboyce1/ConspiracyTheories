@@ -815,3 +815,27 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--hazard-yellow);
   .course-nav.enhanced.menu-open #course-links { display: block; }
   .course-nav h1 br { display: block; }
 }
+
+/* Lesson hierarchy: major sections in the index, details indented within them. */
+.lesson-content { line-height: 1.75; }
+.content-section { margin-top: 2.75rem; }
+.content-section > h2 { margin: 0 0 1rem; padding-bottom: .45rem; border-bottom: 1px solid var(--section-line); }
+.section-body { padding-left: 1.25rem; }
+.section-body p { margin: .8rem 0; }
+.detail-heading { margin: 1.65rem 0 .55rem; font-size: 1.08rem; }
+.main-content h4 { margin: 1.4rem 0 .5rem; font-size: 1rem; }
+.main-content ul, .main-content ol { padding-left: 1.8rem; }
+.main-content li { margin: .5rem 0; padding-left: .2rem; }
+.main-content li > ul, .main-content li > ol { margin: .5rem 0 1rem; padding-left: 1.65rem; }
+.main-content .indented { margin-left: 1.5rem; }
+.objectives-list { margin: .75rem 0 1.5rem; }
+.course-art { margin: 1.5rem 0 2rem; }
+.course-art img { display: block; width: auto; max-width: 100%; max-height: 360px; height: auto; border: 0; }
+.home-art img { width: min(100%, 560px); max-height: none; }
+.course-art a { display: inline-block; }
+.main-content figure:has(table) { margin: 1.5rem 0; }
+@media (max-width: 768px) {
+  .section-body { padding-left: .75rem; }
+  .content-section { margin-top: 2rem; }
+  .main-content .indented { margin-left: 1rem; }
+}
