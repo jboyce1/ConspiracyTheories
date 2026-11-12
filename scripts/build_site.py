@@ -4,7 +4,7 @@ from pathlib import Path
 from bs4 import BeautifulSoup
 from urllib.parse import unquote, urlparse, quote
 import re, json, hashlib, zipfile, html, shutil
-ROOT=Path(__file__).resolve().parents[1]; RAW=ROOT/'SharePoint_Raw'; OUT=ROOT/'docs'; BASE='/ConspiracyTheories/'
+ROOT=Path(__file__).resolve().parents[1]; RAW=ROOT/'SharePoint_Raw'; OUT=ROOT; BASE='/ConspiracyTheories/'
 for d in ['assets/files','assets/images','assets/css','assets/js','lessons']: (OUT/d).mkdir(parents=True,exist_ok=True)
 def slug(s):return re.sub(r'[^a-z0-9]+','-',s.lower()).strip('-')
 def norm(s):return re.sub(r'[^a-z0-9]','',s.lower())
