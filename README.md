@@ -14,3 +14,7 @@ The layout follows ZombieInvasionPrep, with a charcoal, teal, and amber palette.
 The original saved pages contain unloaded SharePoint web parts. Downloaded worksheets and media are provided in lesson download sections. Original lesson PDFs are also available for reference.
 
 GitHub Pages publishes from **main → /(root)** using its built-in branch publishing.
+
+## Lesson media
+
+`scripts/media.json` selects Commons figures and lesson video IDs. Image attribution is stored in `assets/images/commons/credits.json` and published on `image-credits.html`. Original Commons files are stored locally so the images do not depend on external hotlinks.

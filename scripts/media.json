@@ -1,0 +1,16 @@
+{
+  "images": {
+    "M1.1": {"title":"Aldrin Apollo 11.jpg","heading":"What is a Conspiracy Theory","caption":"Buzz Aldrin on the Moon, photographed by Neil Armstrong during Apollo 11."},
+    "M1.2": {"title":"Necker's cube.svg","heading":"Lecture Outline: The Psychological Struggle of Having Beliefs Questioned","caption":"The Necker cube: the same lines can be perceived in more than one way."},
+    "M2.1a": {"title":"Simple decision tree.svg","heading":"Stage 1: Identification – Meta-Analysis of Decision Making","caption":"A decision tree separates alternatives through a sequence of questions."},
+    "M3.1": {"title":"Library of Congress, Main Reading Room.jpg","heading":"Steps for finding sources:","caption":"The Library of Congress Main Reading Room, photographed in the early twentieth century."},
+    "M3.2": {"title":"Galileos Moon.jpg","heading":"The Theory of theory writing","caption":"Galileo’s Moon observations alongside a photograph: compare an interpretation with the evidence."},
+    "M3.3": {"title":"Blind men and elephant.png","heading":"9 Questions down the rabbit hole with Key Assumptions","caption":"The blind men and the elephant: partial observations can lead to different explanations."},
+    "M3.4": {"title":"Magnifying glass with focus on paper.png","heading":"Evidence Collection Phase for the Analysis of Competing Hypotheses (ACH)","caption":"Examine the details of each source before adding it to your evidence collection."},
+    "M3.5": {"title":"Aldrin Apollo 11.jpg","heading":"Evaluation of Evidence to Competing Hypothesis","caption":"Return to the original source: what can a photograph establish, and what needs additional evidence?"},
+    "M3.6": {"title":"Simple decision tree.svg","heading":"If-Then Analysis Exercise","caption":"Follow each condition to its consequences, one branch at a time."},
+    "M3.7": {"title":"House Banking Committee hearing on Watergate Incident.jpg","heading":"Historical Case Studies","caption":"A House Banking Committee hearing on Watergate, October 12, 1972."},
+    "M3.8": {"title":"Edison and phonograph.jpg","caption":"Thomas Edison with an early phonograph. Your final recording brings the research together for an audience."}
+  },
+  "videos": {}
+}

@@ -1,0 +1,83 @@
+[
+  {
+    "title": "Aldrin Apollo 11.jpg",
+    "path": "assets/images/commons/aldrin-apollo-11.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Aldrin_Apollo_11.jpg",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/9/9c/Aldrin_Apollo_11.jpg",
+    "author": "Neil A. Armstrong",
+    "license": "Public domain",
+    "license_url": "https://creativecommons.org/publicdomain/mark/1.0/"
+  },
+  {
+    "title": "Blind men and elephant.png",
+    "path": "assets/images/commons/blind-men-and-elephant.png",
+    "source": "https://commons.wikimedia.org/wiki/File:Blind_men_and_elephant.png",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/3/3f/Blind_men_and_elephant.png",
+    "author": "Illustrator unknown",
+    "license": "Public domain",
+    "license_url": "https://creativecommons.org/publicdomain/mark/1.0/"
+  },
+  {
+    "title": "Edison and phonograph.jpg",
+    "path": "assets/images/commons/edison-and-phonograph.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Edison_and_phonograph.jpg",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/4/41/Edison_and_phonograph.jpg",
+    "author": "Levin C. Handy (per http://hdl.loc.gov/loc.pnp/cwpbh.04326 )",
+    "license": "Public domain",
+    "license_url": "https://creativecommons.org/publicdomain/mark/1.0/"
+  },
+  {
+    "title": "Galileos Moon.jpg",
+    "path": "assets/images/commons/galileos-moon.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Galileos_Moon.jpg",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/2/2e/Galileos_Moon.jpg",
+    "author": "Galileo Galilei; composition by ECeDee",
+    "license": "Public domain",
+    "license_url": "https://creativecommons.org/publicdomain/mark/1.0/"
+  },
+  {
+    "title": "House Banking Committee hearing on Watergate Incident.jpg",
+    "path": "assets/images/commons/house-banking-committee-hearing-on-watergate-incident.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:House_Banking_Committee_hearing_on_Watergate_Incident.jpg",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/f/f2/House_Banking_Committee_hearing_on_Watergate_Incident.jpg",
+    "author": "Warren K. Leffler",
+    "license": "Public domain",
+    "license_url": "https://creativecommons.org/publicdomain/mark/1.0/"
+  },
+  {
+    "title": "Library of Congress, Main Reading Room.jpg",
+    "path": "assets/images/commons/library-of-congress-main-reading-room.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Library_of_Congress,_Main_Reading_Room.jpg",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/a/ad/Library_of_Congress%2C_Main_Reading_Room.jpg",
+    "author": "Detroit Publishing Company, Library of Congress",
+    "license": "Public domain",
+    "license_url": "https://creativecommons.org/publicdomain/mark/1.0/"
+  },
+  {
+    "title": "Magnifying glass with focus on paper.png",
+    "path": "assets/images/commons/magnifying-glass-with-focus-on-paper.png",
+    "source": "https://commons.wikimedia.org/wiki/File:Magnifying_glass_with_focus_on_paper.png",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/e/ea/Magnifying_glass_with_focus_on_paper.png",
+    "author": "Niabot",
+    "license": "CC BY-SA 3.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/3.0"
+  },
+  {
+    "title": "Necker's cube.svg",
+    "path": "assets/images/commons/necker-s-cube.svg",
+    "source": "https://commons.wikimedia.org/wiki/File:Necker%27s_cube.svg",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/b/b3/Necker%27s_cube.svg",
+    "author": "( Stevo-88 )",
+    "license": "Public domain",
+    "license_url": "https://creativecommons.org/publicdomain/mark/1.0/"
+  },
+  {
+    "title": "Simple decision tree.svg",
+    "path": "assets/images/commons/simple-decision-tree.svg",
+    "source": "https://commons.wikimedia.org/wiki/File:Simple_decision_tree.svg",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/2/25/Simple_decision_tree.svg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+    "author": "Eviatar Bach",
+    "license": "CC0",
+    "license_url": "http://creativecommons.org/publicdomain/zero/1.0/deed.en"
+  }
+]

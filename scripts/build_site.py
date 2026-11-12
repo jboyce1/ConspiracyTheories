@@ -62,6 +62,9 @@ def clean(node,f):
     if target:e['src']=BASE+target
     else:e.decompose()
  return ''.join(str(x) for x in b.contents)
+MEDIA=json.loads((ROOT/'scripts/media.json').read_text())
+COMMONS=json.loads((ROOT/'assets/images/commons/credits.json').read_text())
+
 def format_lesson(content,l):
  b=BeautifulSoup(content,'html.parser')
  # Remove saved editor controls and blank spacer paragraphs.
@@ -118,9 +121,40 @@ def format_lesson(content,l):
  for section in grouped.select('.section-body'):
   for h in section.select('h3'):
    h['class']=list(h.get('class',[]))+['detail-heading']
+ # Place selected Commons illustrations near the relevant activity.
+ art=MEDIA['images'].get(l['code'])
+ if art:
+  credit=next(c for c in COMMONS if c['title']==art['title'])
+  figure=BeautifulSoup(commons_figure(art,credit),'html.parser').figure
+  heading=next((h for h in grouped.select('h2') if h.get_text(' ',strip=True)==art.get('heading')),None)
+  if heading:
+   section_body=heading.find_next_sibling('div',class_='section-body')
+   section_body.insert(0,figure)
+  else:
+   h=grouped.find('h1');h.insert_after(figure)
+ video=MEDIA['videos'].get(l['code'])
+ if video:
+  block=BeautifulSoup(video_embed(video),'html.parser')
+  intro=grouped.select_one('.content-section')
+  if intro:intro.insert_before(block)
+  else:grouped.append(block)
  return str(grouped)
 
+def commons_figure(art,c):
+ caption=html.escape(art['caption']);author=html.escape(c['author']);license=html.escape(c['license'])
+ diagram=' diagram-art' if c['path'].endswith('.svg') else ''
+ return f'<figure class="course-art commons-art{diagram}"><a href="{html.escape(c["source"],quote=True)}"><img src="{BASE}{c["path"]}" alt="{caption}" loading="lazy"></a><figcaption>{caption}<span class="image-credit">{author} · <a href="{html.escape(c["source"],quote=True)}">Wikimedia Commons</a> · <a href="{html.escape(c["license_url"],quote=True)}">{license}</a></span></figcaption></figure>'
+
+def video_embed(video):
+ # Config stores the provider ID, never untrusted iframe markup.
+ provider=video.get('provider','youtube');ident=video['id']
+ if not re.fullmatch(r'[A-Za-z0-9_-]+',ident):raise ValueError('Invalid video ID')
+ if provider!='youtube':raise ValueError('Unsupported video provider')
+ title=html.escape(video['title'],quote=True)
+ return f'<section class="lesson-video"><h2>{title}</h2><div class="video-frame"><iframe width="560" height="315" src="https://www.youtube.com/embed/{ident}" title="{title}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div><p class="video-link"><a href="https://www.youtube.com/watch?v={ident}">Watch on YouTube</a></p></section>'
+
 def lesson_art(l):
+ if l['code']!='M2.1b':return ''
  # Match the original SharePoint banner to its archived asset, including blob images.
  img=l['soup'].select_one('[data-sp-originalimgsrc]')
  if not img:return ''
@@ -129,7 +163,7 @@ def lesson_art(l):
  if not target:return ''
  diagrams={'M3.1','M3.2','M3.3','M3.4','M3.5','M3.6','M3.7','M3.8'}
  alt='Conspiracy theory analysis workflow' if l['code'] in diagrams else ('Conspiracy theories course illustration' if l['code'].startswith('M2') else 'Original lesson artwork')
- return f'<figure class="course-art"><a href="{BASE}{target}" aria-label="Open full-size image: {alt}"><img src="{BASE}{target}" alt="{alt}" loading="lazy"></a></figure>'
+ return f'<figure class="course-art"><a href="{BASE}{target}" aria-label="Open full-size image: {alt}"><img src="{BASE}{target}" alt="{alt}" loading="lazy"></a><figcaption>Original course illustration (AI-generated).</figcaption></figure>'
 
 def shell(title,body,key=''):
  nav='<h1><a href="'+BASE+'">Conspiracy<br>Theories</a></h1><p class="nav-caption">Research • Evidence • Analysis</p>'
@@ -138,7 +172,7 @@ def shell(title,body,key=''):
   for l in lessons:
    if l['code'].startswith(module):nav+=f'<a {"aria-current=\"page\"" if key==l["slug"] else ""} href="{BASE}lessons/{l["slug"]}.html"><small>{l["code"]}</small> {html.escape(l["title"])}</a>'
  nav+=f'<h2 class="nav-label">Resources</h2><a href="{BASE}resources.html">Course downloads</a><a href="{BASE}">Course overview</a>'
- return f'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Conspiracy Theories: a course in research, evidence, and structured analysis."><title>{html.escape(title)} | Conspiracy Theories</title><link rel="stylesheet" href="{BASE}assets/css/styles.css"><script defer src="{BASE}assets/js/site.js"></script></head><body><a class="skip-link" href="#main">Skip to content</a><nav class="course-nav" aria-label="Course">{nav}</nav><nav id="left-nav" aria-label="On this page"><h2>Lines of Inquiry</h2><ul id="toc"></ul></nav><main id="main" class="main-content">{body}<footer>Conspiracy Theories · Jacob Boyce</footer></main></body></html>'
+ return f'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Conspiracy Theories: a course in research, evidence, and structured analysis."><title>{html.escape(title)} | Conspiracy Theories</title><link rel="stylesheet" href="{BASE}assets/css/styles.css"><script defer src="{BASE}assets/js/site.js"></script></head><body><a class="skip-link" href="#main">Skip to content</a><nav class="course-nav" aria-label="Course">{nav}</nav><nav id="left-nav" aria-label="On this page"><h2>Lines of Inquiry</h2><ul id="toc"></ul></nav><main id="main" class="main-content">{body}<footer>Conspiracy Theories · Jacob Boyce · <a href="{BASE}image-credits.html">Image credits</a></footer></main></body></html>'
 for i,l in enumerate(lessons):
  f=l['source']; content=f'<p class="eyebrow">{l["code"]} · Conspiracy Theories</p><h1>{html.escape(l["title"])}</h1>'+lesson_art(l)
  for control in l['soup'].select('[data-automation-id="CanvasControl"]'):
@@ -187,3 +221,8 @@ body+='</ul>'
 (OUT/'resources.html').write_text(shell('Course downloads',body));(OUT/'.nojekyll').touch()
 (ROOT/'migration-report.json').write_text(json.dumps({'lessons':len(lessons),'unique_assets':len(hashes),'unresolved_sharepoint_links':issues},indent=2))
 print('Built',len(lessons),'lessons;',len(hashes),'unique assets;',len(issues),'unresolved SharePoint links')
+
+credit_body='<p class="eyebrow">Course images</p><h1>Image credits</h1><p>Supplementary illustrations are selected from Wikimedia Commons. Each figure links to its file page and license. The original AI-generated course illustration is retained separately.</p>'
+for c in COMMONS:
+ credit_body+=f'<h2>{html.escape(c["title"])}</h2><p>{html.escape(c["author"])}</p><p><a href="{html.escape(c["source"],quote=True)}">Source on Wikimedia Commons</a> · <a href="{html.escape(c["license_url"],quote=True)}">{html.escape(c["license"])}</a></p>'
+(OUT/'image-credits.html').write_text(shell('Image credits',credit_body))
